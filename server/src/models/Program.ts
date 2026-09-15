@@ -80,11 +80,16 @@ programSchema.index({ userId: 1, isFavorite: 1 });
 programSchema.index({ userId: 1, updatedAt: -1 });
 
 // Full text search index
-programSchema.index({
-  title: 'text',
-  question: 'text',
-  notes: 'text',
-  tags: 'text',
-});
+programSchema.index(
+  {
+    title: 'text',
+    question: 'text',
+    notes: 'text',
+    tags: 'text',
+  },
+  {
+    language_override: 'none',
+  }
+);
 
 export const Program = mongoose.model<IProgram>('Program', programSchema);

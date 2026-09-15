@@ -69,6 +69,13 @@ function makeRequest(
 async function runTests() {
   console.log('🧪 Starting CodeNest API & Security Verification Suite...\n');
   await connectDatabase();
+  try {
+    // Drop any legacy indexes that might have the default language_override: "language"
+    await Program.collection.dropIndexes();
+  } catch (e) {
+    // Collection might not exist yet
+  }
+  await Program.syncIndexes();
 
   const app = createApp();
   const server = http.createServer(app);

@@ -15,6 +15,10 @@
 
 - **Monaco Code Editor**: Professional syntax highlighting, code folding, bracket matching, line numbers, and theme support (Dark/Light).
 - **Automatic Code Formatting**: Universal client-side `FormatterService` supporting JavaScript, TypeScript, SQL, JSON, Markdown, HTML, CSS, plus graceful auto-indentation for C, C++, Java, and Python.
+- **Cryptographic Read-Only Sharing**: Share programs safely via high-entropy tokens (`/s/:token`). Tokens are SHA-256 hashed in the database, with optional expiration, view counters, and instant revocation.
+- **Observability & Request IDs**: Structured JSON logging powered by Pino with automated correlation IDs (`X-Request-ID`) across requests, plus Kubernetes-ready liveness (`/health/live`) and readiness (`/health/ready`) endpoints.
+- **Role-Based Access Control (RBAC)**: User, Admin, and Super Admin roles with protected administrative telemetry dashboards.
+- **Command Palette & Keyboard Shortcuts**: Instant navigation via `Ctrl+K` (`Cmd+K`), search across programs and subjects, and quick access modal (`?`).
 - **Subject & Tag Organization**: Keep DSA, C Programming, Java, DBMS/SQL, Web Development, and OS exercises categorized.
 - **Instant Search & Filter**: Real-time debounced full-text search across titles, problem questions, notes, and tags.
 - **Auto-Save**: Debounced background persistence with visual save state indicators (`Saving...`, `Saved`, `Unsaved changes`).

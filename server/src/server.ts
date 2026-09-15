@@ -3,9 +3,14 @@ import { connectDatabase, disconnectDatabase } from './config/db.js';
 import { env } from './config/env.js';
 import { logger } from './utils/logger.js';
 
+import { Program } from './models/Program.js';
+
 async function bootstrap() {
   try {
     await connectDatabase();
+    await Program.syncIndexes().catch((err) => {
+      logger.warn({ err: err.message }, 'MongoDB index synchronization notice');
+    });
 
     const app = createApp();
 
