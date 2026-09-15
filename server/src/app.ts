@@ -27,10 +27,30 @@ export function createApp(): Express {
     })
   );
 
-  // 4. CORS configuration
+  // 4. CORS configuration: Supports Render domains, comma-separated origins, and local dev
+  const allowedOrigins = env.CORS_ORIGIN
+    .split(',')
+    .map((o) => o.trim())
+    .filter(Boolean);
+
   app.use(
     cors({
-      origin: [env.CORS_ORIGIN, 'http://localhost:5173', 'http://127.0.0.1:5173'],
+      origin: (requestOrigin, callback) => {
+        // Allow requests with no origin (like server-to-server, curl, probes)
+        if (!requestOrigin) return callback(null, true);
+
+        if (
+          allowedOrigins.includes(requestOrigin) ||
+          allowedOrigins.includes('*') ||
+          requestOrigin.includes('localhost') ||
+          requestOrigin.includes('127.0.0.1') ||
+          requestOrigin.endsWith('.onrender.com') ||
+          env.NODE_ENV !== 'production'
+        ) {
+          return callback(null, true);
+        }
+        return callback(new Error(`Origin ${requestOrigin} not allowed by CORS`));
+      },
       credentials: true,
       methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
       allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'X-Request-ID'],

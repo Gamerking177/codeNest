@@ -1,8 +1,13 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
 
-// Base API configuration
+// Base API configuration: Support VITE_API_URL for Render / production deployments
+const rawApiUrl = import.meta.env.VITE_API_URL;
+export const API_BASE = rawApiUrl
+  ? `${rawApiUrl.replace(/\/+$/, '')}/api/v1`
+  : '/api/v1';
+
 export const apiClient = axios.create({
-  baseURL: '/api/v1',
+  baseURL: API_BASE,
   withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
@@ -82,7 +87,7 @@ apiClient.interceptors.response.use(
 
       try {
         const { data } = await axios.post(
-          '/api/v1/auth/refresh',
+          `${API_BASE}/auth/refresh`,
           {},
           { withCredentials: true }
         );
