@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { ArrowLeft, Save, Plus, FileCode, Tag } from 'lucide-react';
 import { apiClient } from '../api/client';
 import { Input } from '../components/ui/Input';
@@ -8,18 +8,29 @@ import { Button } from '../components/ui/Button';
 import { CodeEditor } from '../components/editor/CodeEditor';
 import { SUPPORTED_LANGUAGES } from '../components/editor/EditorToolbar';
 import { useToast } from '../context/ToastContext';
+import { getStarterTemplate, isStarterTemplate } from '../constants/templates';
 
 export const CreateProgramPage: React.FC = () => {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { toast } = useToast();
 
+  const initialLang = searchParams.get('lang') || 'python';
   const [title, setTitle] = useState('');
   const [subject, setSubject] = useState('');
-  const [language, setLanguage] = useState('cpp');
+  const [language, setLanguage] = useState(initialLang);
   const [question, setQuestion] = useState('');
   const [notes, setNotes] = useState('');
   const [tagsInput, setTagsInput] = useState('');
-  const [code, setCode] = useState(`// Solution code here\n#include <iostream>\n\nint main() {\n    std::cout << "Hello CodeNest!" << std::endl;\n    return 0;\n}`);
+  const [code, setCode] = useState(() => getStarterTemplate(initialLang));
+
+  const handleLanguageChange = (newLang: string) => {
+    setLanguage(newLang);
+    // If the editor still has a default starter template or is empty, auto-switch to the new language template
+    if (isStarterTemplate(code)) {
+      setCode(getStarterTemplate(newLang));
+    }
+  };
 
   const [subjectsList, setSubjectsList] = useState<string[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -171,7 +182,7 @@ export const CreateProgramPage: React.FC = () => {
               </label>
               <select
                 value={language}
-                onChange={(e) => setLanguage(e.target.value)}
+                onChange={(e) => handleLanguageChange(e.target.value)}
                 className="w-full bg-dark-surface text-gray-100 text-sm rounded-lg border border-dark-border py-2 px-3 focus:border-brand-500 focus:outline-none font-mono"
               >
                 {SUPPORTED_LANGUAGES.map((lang) => (
@@ -218,7 +229,7 @@ export const CreateProgramPage: React.FC = () => {
             code={code}
             onChange={setCode}
             language={language}
-            onLanguageChange={setLanguage}
+            onLanguageChange={handleLanguageChange}
             minHeight="500px"
           />
         </div>
