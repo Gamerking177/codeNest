@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  # MongoDB database service (for local standalone deployment)
+  mongodb:
+    image: mongo:7.0
+    container_name: codenest-mongodb
+    restart: unless-stopped
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=codeNest
+    networks:
+      - codenest-net
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Express + TypeScript API backend
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    container_name: codenest-server
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    environment:
+      - NODE_ENV=production
+      - PORT=5000
+      - MONGODB_URI=mongodb://mongodb:27017/codeNest
+      - JWT_SECRET=codenest_jwt_secret_super_secure_key_2026_change_in_prod
+      - REFRESH_TOKEN_SECRET=codenest_refresh_token_secret_key_2026_secure
+      - COOKIE_SECRET=codenest_cookie_secret_key_2026_secure
+      - CORS_ORIGIN=http://localhost:5173
+    depends_on:
+      mongodb:
+        condition: service_healthy
+    networks:
+      - codenest-net
+
+  # React + Vite frontend
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    container_name: codenest-client
+    restart: unless-stopped
+    ports:
+      - "5173:80"
+    depends_on:
+      - server
+    networks:
+      - codenest-net
+
+volumes:
+  mongodb_data:
+    driver: local
+
+networks:
+  codenest-net:
+    driver: bridge
