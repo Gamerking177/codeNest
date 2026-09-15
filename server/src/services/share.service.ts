@@ -78,7 +78,7 @@ export class ShareService {
     return {
       ...shareDto,
       rawToken,
-      shareUrl: `/shared/${rawToken}`,
+      shareUrl: `/s/${rawToken}`,
     };
   }
 
