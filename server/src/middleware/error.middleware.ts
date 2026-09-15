@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { env } from '../config/env.js';
+import { logger } from '../utils/logger.js';
 
 export class AppError extends Error {
   statusCode: number;
@@ -19,6 +20,7 @@ export function notFoundHandler(req: Request, res: Response): void {
     error: {
       code: 'NOT_FOUND',
       message: `The requested resource '${req.originalUrl}' was not found`,
+      requestId: req.id,
     },
   });
 }
@@ -34,9 +36,17 @@ export function errorHandler(
   const statusCode = isAppError ? err.statusCode : 500;
   const code = isAppError ? err.code : 'INTERNAL_SERVER_ERROR';
 
-  if (env.NODE_ENV !== 'production') {
-    console.error(`[Error] ${req.method} ${req.url}:`, err);
-  }
+  logger.error(
+    {
+      requestId: req.id,
+      path: req.originalUrl,
+      method: req.method,
+      code,
+      statusCode,
+      err: isAppError ? err.message : err.stack,
+    },
+    `Error handling request [${req.id}]: ${err.message}`
+  );
 
   const message =
     isAppError || env.NODE_ENV !== 'production'
@@ -48,6 +58,7 @@ export function errorHandler(
     error: {
       code,
       message,
+      requestId: req.id,
     },
   });
 }

@@ -1,4 +1,5 @@
 import mongoose, { Document, Schema, Types } from 'mongoose';
+import { Role } from '../types/rbac.js';
 
 export interface IUser extends Document {
   _id: Types.ObjectId;
@@ -7,7 +8,7 @@ export interface IUser extends Document {
   name: string;
   college?: string;
   avatar?: string;
-  role: 'student' | 'admin';
+  role: Role | string;
   createdAt: Date;
   updatedAt: Date;
 }
@@ -42,8 +43,8 @@ const userSchema = new Schema<IUser>(
     },
     role: {
       type: String,
-      enum: ['student', 'admin'],
-      default: 'student',
+      enum: ['USER', 'ADMIN', 'SUPER_ADMIN', 'student'],
+      default: 'USER',
     },
   },
   {

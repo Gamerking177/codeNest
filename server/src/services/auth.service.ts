@@ -5,6 +5,7 @@ import { RegisterInput, LoginInput } from '../schemas/auth.schema.js';
 import { UserDto, toUserDto } from '../dtos/user.dto.js';
 import { env } from '../config/env.js';
 import { AppError } from '../middleware/error.middleware.js';
+import { Role } from '../types/rbac.js';
 
 export interface AuthTokens {
   accessToken: string;
@@ -41,7 +42,7 @@ export class AuthService {
       passwordHash,
       name: input.name,
       college: input.college || '',
-      role: 'student',
+      role: Role.USER,
     });
 
     const tokens = this.generateTokens(user);

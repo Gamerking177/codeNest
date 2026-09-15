@@ -4,13 +4,22 @@ import cors from 'cors';
 import cookieParser from 'cookie-parser';
 import { env } from './config/env.js';
 import routes from './routes/index.js';
+import healthRoutes from './routes/health.routes.js';
+import { requestIdMiddleware } from './middleware/requestId.middleware.js';
+import { httpLoggingMiddleware } from './middleware/logging.middleware.js';
 import { apiRateLimiter } from './middleware/security.middleware.js';
 import { errorHandler, notFoundHandler } from './middleware/error.middleware.js';
 
 export function createApp(): Express {
   const app = express();
 
-  // Basic security headers
+  // 1. Request ID (Correlation ID) must be attached first
+  app.use(requestIdMiddleware);
+
+  // 2. HTTP Request Logger (Pino structured logger)
+  app.use(httpLoggingMiddleware);
+
+  // 3. Security headers (Helmet)
   app.use(
     helmet({
       contentSecurityPolicy: env.NODE_ENV === 'production' ? undefined : false,
@@ -18,33 +27,29 @@ export function createApp(): Express {
     })
   );
 
-  // CORS configuration
+  // 4. CORS configuration
   app.use(
     cors({
       origin: [env.CORS_ORIGIN, 'http://localhost:5173', 'http://127.0.0.1:5173'],
       credentials: true,
       methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
-      allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+      allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With', 'X-Request-ID'],
+      exposedHeaders: ['X-Request-ID'],
     })
   );
 
-  // Cookie and body parsers
+  // 5. Cookie and body parsers
   app.use(cookieParser(env.COOKIE_SECRET));
   app.use(express.json({ limit: '2mb' }));
   app.use(express.urlencoded({ extended: true, limit: '2mb' }));
 
-  // General rate limiting
+  // 6. Direct Root Health Endpoints (Used by Docker, Kubernetes, Load Balancers)
+  app.use('/health', healthRoutes);
+
+  // 7. General rate limiting on API
   app.use('/api', apiRateLimiter);
 
-  // Request logger in dev
-  if (env.NODE_ENV !== 'production') {
-    app.use((req, res, next) => {
-      console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
-      next();
-    });
-  }
-
-  // API Version 1
+  // 8. API Version 1
   app.use('/api/v1', routes);
 
   // Root welcome
@@ -52,11 +57,13 @@ export function createApp(): Express {
     res.json({
       message: 'CodeNest API is running smoothly.',
       version: '1.0.0',
+      requestId: req.id,
+      health: '/health',
       docs: '/api/v1/health',
     });
   });
 
-  // 404 and Error handling
+  // 9. 404 and Error handling
   app.use(notFoundHandler);
   app.use(errorHandler);
 
