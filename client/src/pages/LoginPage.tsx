@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Eye, EyeOff, Lock, Mail, ArrowRight, Terminal, Sparkles } from 'lucide-react';
+import { Eye, EyeOff, Lock, Mail, ArrowRight, Terminal } from 'lucide-react';
 import { Logo } from '../components/ui/Logo';
 import { Input } from '../components/ui/Input';
 import { Button } from '../components/ui/Button';
@@ -14,7 +14,7 @@ export const LoginPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const { login, demoLogin } = useAuth();
+  const { login } = useAuth();
   const { toast } = useToast();
   const navigate = useNavigate();
 
@@ -35,21 +35,6 @@ export const LoginPage: React.FC = () => {
       const msg =
         err?.response?.data?.error?.message ||
         'Unable to sign in. Please verify your credentials and try again.';
-      setError(msg);
-    } finally {
-      setIsSubmitting(false);
-    }
-  };
-
-  const handleDemoSignIn = async () => {
-    setError(null);
-    setIsSubmitting(true);
-    try {
-      await demoLogin();
-      toast.success('Signed in as demo student (Alex Rivera)!');
-      navigate('/dashboard');
-    } catch (err: any) {
-      const msg = err?.response?.data?.error?.message || 'Unable to connect to demo account.';
       setError(msg);
     } finally {
       setIsSubmitting(false);
@@ -133,24 +118,6 @@ export const LoginPage: React.FC = () => {
               Sign In
             </Button>
           </form>
-
-          {/* Quick Demo Student Access */}
-          <div className="mt-6 pt-6 border-t border-dark-border">
-            <div className="text-center mb-3">
-              <span className="text-[11px] font-mono uppercase tracking-wider text-gray-500">
-                Evaluation Access
-              </span>
-            </div>
-            <button
-              onClick={handleDemoSignIn}
-              disabled={isSubmitting}
-              type="button"
-              className="w-full flex items-center justify-center gap-2 p-2.5 rounded-lg bg-dark-surface hover:bg-dark-panel border border-brand-500/30 text-xs font-medium text-brand-300 transition-colors"
-            >
-              <Sparkles className="w-3.5 h-3.5 text-brand-400" />
-              <span>Sign in with 1-Click Demo Account (Alex Rivera)</span>
-            </button>
-          </div>
 
           <p className="text-center text-xs text-gray-400 mt-6">
             Don't have an account?{' '}
