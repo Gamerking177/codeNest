@@ -2,6 +2,7 @@
   "name": "codenest-server",
   "version": "1.0.0",
   "description": "CodeNest REST API Backend",
+  "author": "Aksh Raj",
   "main": "dist/server.js",
   "scripts": {
     "dev": "nodemon",

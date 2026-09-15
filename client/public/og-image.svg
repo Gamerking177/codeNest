@@ -1,0 +1,95 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" width="1200" height="630">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a0d12" />
+      <stop offset="50%" stop-color="#0f172a" />
+      <stop offset="100%" stop-color="#06090e" />
+    </linearGradient>
+    <linearGradient id="brand" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#10b981" />
+      <stop offset="100%" stop-color="#059669" />
+    </linearGradient>
+    <radialGradient id="glow" cx="20%" cy="30%" r="50%">
+      <stop offset="0%" stop-color="#10b981" stop-opacity="0.25" />
+      <stop offset="100%" stop-color="#10b981" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1200" height="630" fill="url(#bg)" />
+  <rect width="1200" height="630" fill="url(#glow)" />
+
+  <!-- Subtle Grid Pattern -->
+  <g opacity="0.1" stroke="#334155" stroke-width="1">
+    <line x1="100" y1="0" x2="100" y2="630" />
+    <line x1="200" y1="0" x2="200" y2="630" />
+    <line x1="300" y1="0" x2="300" y2="630" />
+    <line x1="400" y1="0" x2="400" y2="630" />
+    <line x1="500" y1="0" x2="500" y2="630" />
+    <line x1="600" y1="0" x2="600" y2="630" />
+    <line x1="700" y1="0" x2="700" y2="630" />
+    <line x1="800" y1="0" x2="800" y2="630" />
+    <line x1="900" y1="0" x2="900" y2="630" />
+    <line x1="1000" y1="0" x2="1000" y2="630" />
+    <line x1="1100" y1="0" x2="1100" y2="630" />
+    <line x1="0" y1="100" x2="1200" y2="100" />
+    <line x1="0" y1="200" x2="1200" y2="200" />
+    <line x1="0" y1="300" x2="1200" y2="300" />
+    <line x1="0" y1="400" x2="1200" y2="400" />
+    <line x1="0" y1="500" x2="1200" y2="500" />
+    <line x1="0" y1="600" x2="1200" y2="600" />
+  </g>
+
+  <!-- Logo Mark -->
+  <g transform="translate(100, 120)">
+    <rect width="90" height="90" rx="22" fill="#0f172a" stroke="#1e293b" stroke-width="2" />
+    <path d="M22 34h46M22 24h6m6 0h6" stroke="#10b981" stroke-width="5" stroke-linecap="round" />
+    <path d="M28 50l12 12-12 12m16-3h18" stroke="#34d399" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+  </g>
+
+  <!-- Brand Title -->
+  <text x="215" y="185" font-family="system-ui, -apple-system, sans-serif" font-weight="800" font-size="64" fill="#ffffff" letter-spacing="-1">
+    Code<tspan fill="#10b981">Nest</tspan>
+  </text>
+
+  <!-- Tagline -->
+  <text x="100" y="290" font-family="system-ui, -apple-system, sans-serif" font-weight="700" font-size="44" fill="#f8fafc" letter-spacing="-0.5">
+    Your personal home for code.
+  </text>
+
+  <!-- Description -->
+  <text x="100" y="345" font-family="system-ui, -apple-system, sans-serif" font-weight="400" font-size="22" fill="#94a3b8">
+    A secure, developer-first coding notebook and college programming assignment platform.
+  </text>
+  <text x="100" y="380" font-family="system-ui, -apple-system, sans-serif" font-weight="400" font-size="22" fill="#94a3b8">
+    Write, format, organize, and securely share solutions across C++, Java, Python, SQL, and more.
+  </text>
+
+  <!-- Feature Pills -->
+  <g transform="translate(100, 460)">
+    <!-- Pill 1 -->
+    <rect x="0" y="0" width="220" height="48" rx="24" fill="#0f172a" stroke="#1e293b" stroke-width="1.5" />
+    <circle cx="24" cy="24" r="6" fill="#10b981" />
+    <text x="42" y="30" font-family="system-ui, -apple-system, sans-serif" font-weight="600" font-size="15" fill="#e2e8f0">Monaco Editor</text>
+
+    <!-- Pill 2 -->
+    <rect x="240" y="0" width="230" height="48" rx="24" fill="#0f172a" stroke="#1e293b" stroke-width="1.5" />
+    <circle cx="264" cy="24" r="6" fill="#38bdf8" />
+    <text x="282" y="30" font-family="system-ui, -apple-system, sans-serif" font-weight="600" font-size="15" fill="#e2e8f0">DSA &amp; Assignments</text>
+
+    <!-- Pill 3 -->
+    <rect x="490" y="0" width="240" height="48" rx="24" fill="#0f172a" stroke="#1e293b" stroke-width="1.5" />
+    <circle cx="514" cy="24" r="6" fill="#a855f7" />
+    <text x="532" y="30" font-family="system-ui, -apple-system, sans-serif" font-weight="600" font-size="15" fill="#e2e8f0">Cryptographic Sharing</text>
+
+    <!-- Pill 4 -->
+    <rect x="750" y="0" width="220" height="48" rx="24" fill="#0f172a" stroke="#1e293b" stroke-width="1.5" />
+    <circle cx="774" cy="24" r="6" fill="#f59e0b" />
+    <text x="792" y="30" font-family="system-ui, -apple-system, sans-serif" font-weight="600" font-size="15" fill="#e2e8f0">Auto-Formatting</text>
+  </g>
+
+  <!-- URL watermark -->
+  <text x="100" y="570" font-family="ui-monospace, monospace" font-size="16" fill="#64748b">
+    https://codenest-app.vercel.app
+  </text>
+</svg>

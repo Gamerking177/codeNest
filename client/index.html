@@ -2,13 +2,112 @@
 <html lang="en" class="dark">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' fill='none'><rect width='32' height='32' rx='8' fill='%230f151c'/><rect x='0.5' y='0.5' width='31' height='31' rx='7.5' stroke='%231f2937'/><path d='M8 12h16M8 8h2m2 0h2' stroke='%2310b981' stroke-width='1.75' stroke-linecap='round'/><path d='M10 17l4 4-4 4m6-1h6' stroke='%2334d399' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/></svg>" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>CodeNest — Your personal home for code</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+    
+    <!-- Primary SEO Meta Tags -->
+    <title>CodeNest — Your Personal Home for Code | Programming Notebook &amp; Assignment Hub</title>
+    <meta name="title" content="CodeNest — Your Personal Home for Code | Programming Notebook &amp; Assignment Hub" />
+    <meta name="description" content="CodeNest is a secure, developer-first coding notebook and college programming assignment management platform. Write, format, organize, and securely share code in C++, Python, Java, SQL, and more with Monaco Editor." />
+    <meta name="keywords" content="coding notebook, programming assignments, college code manager, monaco editor online, dsa solutions, code snippet manager, share code snippet, secure code sharing, student code organizer, developer notebook, c++ notebook, python code manager, sql assignments" />
+    <meta name="author" content="Aksh Raj" />
+    <meta name="creator" content="Aksh Raj" />
+    <meta name="application-name" content="CodeNest" />
+    <link rel="canonical" href="https://codenest-app.vercel.app/" />
+
+    <!-- Search Engine Indexing & AI Crawlers -->
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+    <meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+    <meta name="bingbot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+
+    <!-- Open Graph / Facebook / LinkedIn Meta Tags -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="CodeNest" />
+    <meta property="og:url" content="https://codenest-app.vercel.app/" />
+    <meta property="og:title" content="CodeNest — Your Personal Home for Code" />
+    <meta property="og:description" content="Organize college programming assignments, write and format code with Monaco Editor, preserve problem statements and notes, and securely share solutions." />
+    <meta property="og:image" content="https://codenest-app.vercel.app/og-image.svg" />
+    <meta property="og:image:secure_url" content="https://codenest-app.vercel.app/og-image.svg" />
+    <meta property="og:image:type" content="image/svg+xml" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="CodeNest — Personal Coding Notebook Preview" />
+    <meta property="og:locale" content="en_US" />
+
+    <!-- Twitter / X Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:url" content="https://codenest-app.vercel.app/" />
+    <meta name="twitter:title" content="CodeNest — Your Personal Home for Code" />
+    <meta name="twitter:description" content="Organize college programming assignments, write and format code with Monaco Editor, preserve problem statements and notes, and securely share solutions." />
+    <meta name="twitter:image" content="https://codenest-app.vercel.app/og-image.svg" />
+    <meta name="twitter:image:alt" content="CodeNest — Personal Coding Notebook Preview" />
+
+    <!-- Mobile & PWA Ergonomics -->
+    <meta name="theme-color" content="#0a0d12" />
+    <meta name="color-scheme" content="dark light" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="apple-mobile-web-app-title" content="CodeNest" />
+
+    <!-- Favicon and App Icons -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="apple-touch-icon" href="/favicon.svg" />
+
     <!-- Google Fonts: Inter and JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+    <!-- Schema.org JSON-LD Structured Data for AI & Search Engines -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebApplication",
+          "@id": "https://codenest-app.vercel.app/#webapp",
+          "name": "CodeNest",
+          "url": "https://codenest-app.vercel.app/",
+          "description": "A secure, developer-first coding notebook and college programming assignment platform. Write, format, organize, and share code in C++, Java, Python, SQL, and more with Monaco Editor.",
+          "applicationCategory": "DeveloperApplication",
+          "operatingSystem": "All",
+          "browserRequirements": "Requires modern web browser with JavaScript enabled",
+          "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+          },
+          "featureList": [
+            "Monaco Code Editor with Dark/Light Themes",
+            "Client-Side AST Code Formatting for C++, Python, Java, SQL, JS, TS",
+            "College Subject and Tag Organization (DSA, DBMS, OS, OOP)",
+            "Cryptographic Read-Only Solution Sharing via SHA-256 Tokens",
+            "IDOR-Protected Ownership & Strict Security",
+            "Command Palette Navigation (Ctrl+K) & Keyboard Shortcuts"
+          ],
+          "author": {
+            "@type": "Person",
+            "name": "Aksh Raj"
+          },
+          "creator": {
+            "@type": "Person",
+            "name": "Aksh Raj"
+          }
+        },
+        {
+          "@type": "Organization",
+          "@id": "https://codenest-app.vercel.app/#organization",
+          "name": "CodeNest",
+          "url": "https://codenest-app.vercel.app/",
+          "logo": "https://codenest-app.vercel.app/favicon.svg",
+          "founder": {
+            "@type": "Person",
+            "name": "Aksh Raj"
+          }
+        }
+      ]
+    }
+    </script>
   </head>
   <body class="bg-dark-bg text-gray-100 antialiased selection:bg-brand-500/20 selection:text-brand-300 min-h-screen overflow-x-hidden">
     <div id="root"></div>
