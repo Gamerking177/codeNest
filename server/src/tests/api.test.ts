@@ -119,6 +119,36 @@ async function runTests() {
     const resReady = await makeRequest(server, 'GET', '/health/ready');
     assert(resReady.statusCode === 200 && resReady.body.database === 'connected', 'GET /health/ready confirms database is connected');
 
+    // 1.1 Strict CORS Whitelist Verification
+    console.log('\n--- 1.1 Strict CORS Whitelist Verification ---');
+    const resCorsWhitelisted = await makeRequest(server, 'GET', '/health/live', undefined, {
+      Origin: 'http://localhost:5173',
+    });
+    assert(
+      resCorsWhitelisted.headers['access-control-allow-origin'] === 'http://localhost:5173',
+      'Whitelisted dev origin receives Access-Control-Allow-Origin'
+    );
+    assert(
+      resCorsWhitelisted.headers['access-control-allow-credentials'] === 'true',
+      'Whitelisted origin receives Access-Control-Allow-Credentials: true'
+    );
+
+    const resCorsUntrusted = await makeRequest(server, 'GET', '/health/live', undefined, {
+      Origin: 'https://evil-attacker.vercel.app',
+    });
+    assert(
+      resCorsUntrusted.headers['access-control-allow-origin'] === undefined,
+      'Untrusted public domain (*.vercel.app) is rejected and receives NO CORS headers'
+    );
+
+    const resCorsMalicious = await makeRequest(server, 'GET', '/health/live', undefined, {
+      Origin: 'https://attacker-localhost.com',
+    });
+    assert(
+      resCorsMalicious.headers['access-control-allow-origin'] === undefined,
+      'Spoofed localhost domain (attacker-localhost.com) is rejected'
+    );
+
     // 2. Authentication
     console.log('\n--- 2. Authentication & JWT ---');
     const resRegA = await makeRequest(server, 'POST', '/api/v1/auth/register', {

@@ -27,30 +27,39 @@ export function createApp(): Express {
     })
   );
 
-  // 4. CORS configuration: Supports Render domains, comma-separated origins, and local dev
+  // 4. Strict Multi-Origin CORS Whitelist
   const allowedOrigins = env.CORS_ORIGIN
     .split(',')
-    .map((o) => o.trim())
+    .map((o) => o.trim().replace(/\/$/, ''))
     .filter(Boolean);
+
+  const localDevOrigins = [
+    'http://localhost:5173',
+    'http://localhost:3000',
+    'http://127.0.0.1:5173',
+    'http://127.0.0.1:3000',
+  ];
 
   app.use(
     cors({
       origin: (requestOrigin, callback) => {
-        // Allow requests with no origin (like server-to-server, curl, probes)
+        // Allow requests with no origin (server-to-server, curl, health probes)
         if (!requestOrigin) return callback(null, true);
 
-        if (
-          allowedOrigins.includes(requestOrigin) ||
-          allowedOrigins.includes('*') ||
-          requestOrigin.includes('localhost') ||
-          requestOrigin.includes('127.0.0.1') ||
-          requestOrigin.endsWith('.onrender.com') ||
-          requestOrigin.endsWith('.vercel.app') ||
-          env.NODE_ENV !== 'production'
-        ) {
+        const normalizedOrigin = requestOrigin.replace(/\/$/, '');
+
+        // In development / test, allow standard local dev origins
+        if (env.NODE_ENV !== 'production' && localDevOrigins.includes(normalizedOrigin)) {
           return callback(null, true);
         }
-        return callback(new Error(`Origin ${requestOrigin} not allowed by CORS`));
+
+        // In production, strictly match explicitly configured whitelist
+        if (allowedOrigins.includes(normalizedOrigin)) {
+          return callback(null, true);
+        }
+
+        // Disallow untrusted origins (browser will block cross-origin access)
+        return callback(null, false);
       },
       credentials: true,
       methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
