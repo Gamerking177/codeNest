@@ -1,6 +1,13 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { User } from '../types';
-import { apiClient, setAccessToken, getAccessToken } from '../api/client';
+import {
+  apiClient,
+  setAccessToken,
+  getAccessToken,
+  setRefreshToken,
+  getRefreshToken,
+  clearTokens,
+} from '../api/client';
 
 interface AuthContextType {
   user: User | null;
@@ -23,26 +30,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     async function checkAuth() {
       const token = getAccessToken();
+      const refToken = getRefreshToken();
+
+      // If no tokens exist, there is no active session
+      if (!token && !refToken) {
+        setIsLoading(false);
+        return;
+      }
+
       try {
         const response = await apiClient.get('/auth/me');
         if (response.data?.success && response.data?.data?.user) {
           setUser(response.data.data.user);
         }
       } catch {
-        // Token might be missing or expired, attempt refresh via cookie
-        try {
-          const refreshRes = await apiClient.post('/auth/refresh', {});
-          if (refreshRes.data?.success && refreshRes.data?.data?.accessToken) {
-            setAccessToken(refreshRes.data.data.accessToken);
-            setUser(refreshRes.data.data.user);
-          } else {
-            setUser(null);
-            setAccessToken(null);
-          }
-        } catch {
-          setUser(null);
-          setAccessToken(null);
-        }
+        // If /auth/me and its automated refresh interceptor failed, clear session
+        clearTokens();
+        setUser(null);
       } finally {
         setIsLoading(false);
       }
@@ -55,8 +59,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsLoading(true);
     try {
       const response = await apiClient.post('/auth/login', { email, password });
-      const { accessToken, user: loggedInUser } = response.data.data;
+      const { accessToken, refreshToken, user: loggedInUser } = response.data.data;
       setAccessToken(accessToken);
+      if (refreshToken) {
+        setRefreshToken(refreshToken);
+      }
       setUser(loggedInUser);
     } finally {
       setIsLoading(false);
@@ -67,8 +74,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setIsLoading(true);
     try {
       const response = await apiClient.post('/auth/register', { name, email, password, college });
-      const { accessToken, user: newUser } = response.data.data;
+      const { accessToken, refreshToken, user: newUser } = response.data.data;
       setAccessToken(accessToken);
+      if (refreshToken) {
+        setRefreshToken(refreshToken);
+      }
       setUser(newUser);
     } finally {
       setIsLoading(false);
@@ -77,11 +87,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const logout = async () => {
     try {
-      await apiClient.post('/auth/logout');
+      const refToken = getRefreshToken();
+      await apiClient.post('/auth/logout', { refreshToken: refToken || undefined });
     } catch {
       // Ignore network errors on logout
     } finally {
-      setAccessToken(null);
+      clearTokens();
       setUser(null);
     }
   };
