@@ -74,7 +74,7 @@ export class AuthService {
     };
   }
 
-  static async refreshToken(oldRefreshToken: string): Promise<{ accessToken: string; user: UserDto }> {
+  static async refreshToken(oldRefreshToken: string): Promise<{ accessToken: string; refreshToken: string; user: UserDto }> {
     try {
       const decoded = jwt.verify(oldRefreshToken, env.REFRESH_TOKEN_SECRET) as { id: string };
       const user = await User.findById(decoded.id);
@@ -82,10 +82,11 @@ export class AuthService {
         throw new AppError('User not found.', 401, 'USER_NOT_FOUND');
       }
 
-      const { accessToken } = this.generateTokens(user);
+      const { accessToken, refreshToken } = this.generateTokens(user);
 
       return {
         accessToken,
+        refreshToken,
         user: toUserDto(user),
       };
     } catch {

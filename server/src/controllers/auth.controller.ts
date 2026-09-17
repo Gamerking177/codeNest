@@ -2,10 +2,11 @@ import { Request, Response, NextFunction } from 'express';
 import { AuthService } from '../services/auth.service.js';
 import { env } from '../config/env.js';
 
+const isProduction = env.NODE_ENV === 'production';
 const COOKIE_OPTIONS = {
   httpOnly: true,
-  secure: env.NODE_ENV === 'production',
-  sameSite: 'lax' as const,
+  secure: isProduction,
+  sameSite: (isProduction ? 'none' : 'lax') as 'none' | 'lax',
   path: '/',
 };
 
@@ -28,6 +29,7 @@ export class AuthController {
         success: true,
         data: {
           accessToken: result.accessToken,
+          refreshToken: result.refreshToken,
           user: result.user,
         },
       });
@@ -54,6 +56,7 @@ export class AuthController {
         success: true,
         data: {
           accessToken: result.accessToken,
+          refreshToken: result.refreshToken,
           user: result.user,
         },
       });
@@ -78,6 +81,11 @@ export class AuthController {
 
       const result = await AuthService.refreshToken(token);
 
+      res.cookie('refreshToken', result.refreshToken, {
+        ...COOKIE_OPTIONS,
+        maxAge: 7 * 24 * 60 * 60 * 1000, // Renew 7-day refresh cookie
+      });
+
       res.cookie('accessToken', result.accessToken, {
         ...COOKIE_OPTIONS,
         maxAge: 15 * 60 * 1000,
@@ -87,6 +95,7 @@ export class AuthController {
         success: true,
         data: {
           accessToken: result.accessToken,
+          refreshToken: result.refreshToken,
           user: result.user,
         },
       });
