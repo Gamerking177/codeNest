@@ -15,6 +15,7 @@ export const apiClient = axios.create({
 });
 
 let accessToken: string | null = localStorage.getItem('codenest_token');
+let refreshToken: string | null = localStorage.getItem('codenest_refresh_token');
 
 export function setAccessToken(token: string | null) {
   accessToken = token;
@@ -27,6 +28,24 @@ export function setAccessToken(token: string | null) {
 
 export function getAccessToken(): string | null {
   return accessToken;
+}
+
+export function setRefreshToken(token: string | null) {
+  refreshToken = token;
+  if (token) {
+    localStorage.setItem('codenest_refresh_token', token);
+  } else {
+    localStorage.removeItem('codenest_refresh_token');
+  }
+}
+
+export function getRefreshToken(): string | null {
+  return refreshToken;
+}
+
+export function clearTokens() {
+  setAccessToken(null);
+  setRefreshToken(null);
 }
 
 // Request Interceptor: Attach Bearer Token and client correlation info
@@ -86,14 +105,19 @@ apiClient.interceptors.response.use(
       isRefreshing = true;
 
       try {
+        const storedRefreshToken = getRefreshToken();
         const { data } = await axios.post(
           `${API_BASE}/auth/refresh`,
-          {},
+          { refreshToken: storedRefreshToken || undefined },
           { withCredentials: true }
         );
 
         const newAccessToken = data.data.accessToken;
+        const newRefreshToken = data.data.refreshToken;
         setAccessToken(newAccessToken);
+        if (newRefreshToken) {
+          setRefreshToken(newRefreshToken);
+        }
 
         processQueue(null, newAccessToken);
 
@@ -103,7 +127,7 @@ apiClient.interceptors.response.use(
         return apiClient(originalRequest);
       } catch (refreshError) {
         processQueue(refreshError, null);
-        setAccessToken(null);
+        clearTokens();
         return Promise.reject(refreshError);
       } finally {
         isRefreshing = false;
