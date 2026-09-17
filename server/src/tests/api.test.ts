@@ -128,7 +128,9 @@ async function runTests() {
       college: 'MIT CSE',
     });
     assert(resRegA.statusCode === 201 && Boolean(resRegA.body.data?.accessToken), 'User A registration succeeds and returns accessToken');
+    assert(Boolean(resRegA.body.data?.refreshToken), 'User A registration returns refreshToken in response payload');
     tokenA = resRegA.body.data.accessToken;
+    const refreshTokenA = resRegA.body.data.refreshToken;
 
     const resRegB = await makeRequest(server, 'POST', '/api/v1/auth/register', {
       email: testEmailB,
@@ -138,6 +140,22 @@ async function runTests() {
     });
     assert(resRegB.statusCode === 201 && Boolean(resRegB.body.data?.accessToken), 'User B registration succeeds');
     tokenB = resRegB.body.data.accessToken;
+
+    // 2.1 Refresh Token & Rotation
+    console.log('\n--- 2.1 Refresh Token & Session Renewal ---');
+    const resRefresh = await makeRequest(server, 'POST', '/api/v1/auth/refresh', {
+      refreshToken: refreshTokenA,
+    });
+    assert(resRefresh.statusCode === 200 && Boolean(resRefresh.body.data?.accessToken), 'POST /api/v1/auth/refresh succeeds with body refreshToken');
+    assert(Boolean(resRefresh.body.data?.refreshToken), 'POST /api/v1/auth/refresh returns renewed rotated refreshToken');
+
+    const resRefreshBad = await makeRequest(server, 'POST', '/api/v1/auth/refresh', {
+      refreshToken: 'invalid.jwt.token',
+    });
+    assert(resRefreshBad.statusCode === 401, 'POST /api/v1/auth/refresh rejects invalid token with 401');
+
+    const resRefreshEmpty = await makeRequest(server, 'POST', '/api/v1/auth/refresh', {});
+    assert(resRefreshEmpty.statusCode === 401, 'POST /api/v1/auth/refresh rejects missing token with 401');
 
     // 3. Program Creation (User A)
     console.log('\n--- 3. Program CRUD (User A) ---');

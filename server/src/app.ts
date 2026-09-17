@@ -45,6 +45,7 @@ export function createApp(): Express {
           requestOrigin.includes('localhost') ||
           requestOrigin.includes('127.0.0.1') ||
           requestOrigin.endsWith('.onrender.com') ||
+          requestOrigin.endsWith('.vercel.app') ||
           env.NODE_ENV !== 'production'
         ) {
           return callback(null, true);
